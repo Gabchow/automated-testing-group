@@ -194,3 +194,26 @@ def test_tasks_remain_after_refresh(page: Page):
         path="docs/evidence/member-3/extra-test-1-refresh-tasks.png",
         full_page=True,
     )
+
+def test_cancel_edit_with_escape(page: Page):
+    page.goto(URL)
+
+    add_task(page, "Read a book")
+
+    task_label = page.locator(".todo-list li label")
+
+    expect(task_label).to_have_text(["Read a book"])
+
+    task_label.dblclick()
+
+    edit_input = page.locator(".todo-list li.editing .edit")
+
+    edit_input.fill("Read a novel")
+    edit_input.press("Escape")
+
+    expect(task_label).to_have_text(["Read a book"])
+
+    page.screenshot(
+        path="docs/evidence/member-3/extra-test-2-cancel-edit.png",
+        full_page=True,
+    )
