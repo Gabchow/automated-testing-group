@@ -89,6 +89,7 @@ def test_login_with_correct_details(page: Page):
         )
     ).to_be_visible()
 
+
 def test_login_with_incorrect_password(page: Page):
     page.goto("https://the-internet.herokuapp.com/login")
 
@@ -103,3 +104,30 @@ def test_login_with_incorrect_password(page: Page):
     expect(
         page.get_by_role("button", name="Login")
     ).to_be_visible()
+
+
+from playwright.sync_api import Page, expect
+
+
+def test_recorded_task(page: Page):
+    page.goto("https://demo.playwright.dev/todomvc/")
+
+    task_input = page.get_by_placeholder(
+        "What needs to be done?",
+        exact=True,
+    )
+
+    task_input.fill("Try the recorder")
+    task_input.press("Enter")
+
+    task_labels = page.locator(".todo-list li label")
+
+    expect(task_labels).to_have_text(["Try the recorder"])
+
+def add_task(page: Page, task_name: str):
+    task_input = page.get_by_placeholder(
+        "What needs to be done?",
+        exact=True,
+    )
+    task_input.fill(task_name)
+    task_input.press("Enter")
