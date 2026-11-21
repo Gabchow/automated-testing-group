@@ -128,3 +128,53 @@ def test_add_two_tasks(page: Page):
     expect(task_items.locator("label")).to_have_text(
         ["Read the instructions", "Practise the examples"]
     )
+
+
+def test_active_filter_shows_unfinished_task(page: Page):
+    page.goto(URL)
+    task_items = page.locator(".todo-list li")
+
+    expect(task_items).to_have_count(0)
+
+    add_task(page, "Read a chapter")
+    add_task(page, "Write a summary")
+    expect(task_items).to_have_count(2)
+
+    first_checkbox = task_items.first.get_by_role("checkbox")
+    first_checkbox.check()
+    expect(first_checkbox).to_be_checked()
+
+    page.get_by_role("link", name="Active", exact=True).click()
+
+    expect(task_items).to_have_count(1)
+    expect(task_items.locator("label")).to_have_text(["Write a summary"])
+
+    page.screenshot(
+        path="docs/evidence/member-4/extra-test-1-active-filter.png",
+        full_page=True,
+    )
+
+
+def test_login_with_incorrect_username(page: Page):
+    page.goto("https://the-internet.herokuapp.com/login")
+
+    page.get_by_label("Username").fill("wrongusername")
+    page.get_by_label("Password").fill("SuperSecretPassword!")
+    page.get_by_role("button", name="Login").click()
+
+    expect(
+        page.get_by_text("Your username is invalid!")
+    ).to_be_visible()
+
+    expect(
+        page.get_by_role("heading", name="Secure Area", exact=True)
+    ).to_have_count(0)
+
+    expect(
+        page.get_by_role("button", name="Login")
+    ).to_be_visible()
+
+    page.screenshot(
+        path="docs/evidence/member-4/extra-test-2-incorrect-username.png",
+        full_page=True,
+    )
