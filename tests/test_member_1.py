@@ -121,3 +121,70 @@ def test_add_two_tasks(page: Page):
     expect(task_items.locator("label")).to_have_text(
         ["Read the instructions", "Practise the examples"]
     )
+
+def test_save_edit_enter(page : Page):
+    page.goto("https://demo.playwright.dev/todomvc/")
+
+    task_input = page.get_by_placeholder(
+        "What needs to be done?",
+        exact=True,
+    )
+    task_items = page.locator(".todo-list li")
+    task_labels = task_items.locator("label")
+
+    expect(task_items).to_have_count(0)
+
+    task_input.fill("Read testing notes")
+    task_input.press("Enter")
+
+    page.get_by_test_id("todo-title").dblclick()
+    edit_input = page.get_by_role("textbox", name ="Edit")
+    edit_input.fill("Edited")
+
+    edit_input.press("Enter")
+
+    expect(task_items).to_have_count(1)
+    expect(task_labels).to_have_text(["Edited"])
+    expect(task_input).to_have_value("")
+
+    page.screenshot(
+    path="docs/evidence/member-1/extra-test-1-save-edit.png",
+    full_page=True,
+    )
+
+def test_mark_all_complete(page : Page):
+    page.goto("https://demo.playwright.dev/todomvc/")
+
+    task_input = page.get_by_placeholder(
+        "What needs to be done?",
+        exact=True,
+    )
+    task_items = page.locator(".todo-list li")
+    task_labels = task_items.locator("label")
+
+    expect(task_items).to_have_count(0)
+
+    task_input.fill("Read testing notes")
+    task_input.press("Enter")
+
+    task_input.fill("edit testing notes")
+    task_input.press("Enter")
+
+    task_input.fill("final testing notes")
+    task_input.press("Enter")
+
+    complete = page.get_by_role("checkbox", name ="Mark all as complete")
+    complete.click()
+
+    expect(task_items).to_have_count(3)
+    expect(task_items.nth(0).get_by_role("checkbox")).to_be_checked()
+    expect(task_items.nth(1).get_by_role("checkbox")).to_be_checked()
+    expect(task_items.nth(2).get_by_role("checkbox")).to_be_checked()
+
+    expect(task_labels).to_have_text(["Read testing notes", "edit testing notes", "final testing notes"])
+    expect(task_input).to_have_value("")
+
+    page.screenshot(
+    path="docs/evidence/member-1/extra-test-2-mark-complete.png",
+    full_page=True,
+    )
