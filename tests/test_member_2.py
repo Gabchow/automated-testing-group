@@ -132,3 +132,84 @@ def test_add_two_tasks(page: Page):
     expect(task_items.locator("label")).to_have_text(
         ["Read the instructions", "Practise the examples"]
     )
+
+
+
+### EXTRA TEST 1 ###
+# Scenario: Deleting a task removes it from the list.
+# Condition: Fresh session and empty list.
+# Values: "Study Python" and "Complete assignment".
+# Description: Add both tasks, then delete "Study Python".
+# Expected outcome: Only "Complete assignment" remains.
+def test_delete_active_task(page: Page):
+    page.goto(URL)
+
+    task_items = page.locator(".todo-list li")
+
+    # Add two tasks
+    add_task(page, "Study Python")
+    add_task(page, "Complete assignment")
+
+    # Verify both exist
+    expect(task_items).to_have_count(2)
+
+    # Delete the first task
+    first_task = task_items.filter(has_text="Study Python")
+    first_task.hover()
+    first_task.locator(".destroy").click()
+
+    # Verify only the second task remains
+    expect(task_items).to_have_count(1)
+    expect(task_items.locator("label")).to_have_text(
+        ["Complete assignment"]
+    )
+
+    # Save screenshot evidence
+    page.screenshot(
+        path="docs/evidence/member-2/extra-test-1-delete-task.png",
+        full_page=True,
+    )
+
+
+
+### EXTRA TEST 2 ###
+# Scenario: Active shows unfinished tasks only.
+# Condition: Fresh session and empty list.
+# Values: "Revise DevOps" and "Submit homework".
+# Description: Add both tasks, complete the first, then select Active.
+# Expected outcome: Only "Submit homework" appears.
+def test_active_filter(page: Page):
+    page.goto(URL)
+
+    task_items = page.locator(".todo-list li")
+
+    # Add two tasks
+    add_task(page, "Revise DevOps")
+    add_task(page, "Submit homework")
+
+    # Verify both tasks were added
+    expect(task_items).to_have_count(2)
+
+    # Mark the first task as completed
+    first_task = task_items.filter(has_text="Revise DevOps")
+    first_task.get_by_role("checkbox").check()
+
+    # Verify task is completed
+    expect(first_task.get_by_role("checkbox")).to_be_checked()
+
+    # Select the Active filter
+    page.get_by_role(
+        "link", name="Active", exact=True
+    ).click()
+
+    # Only the unfinished task should appear
+    expect(task_items).to_have_count(1)
+    expect(task_items.locator("label")).to_have_text(
+        ["Submit homework"]
+    )
+
+    # Save screenshot evidence
+    page.screenshot(
+        path="docs/evidence/member-2/extra-test-2-active-filter.png",
+        full_page=True,
+    )
