@@ -22,13 +22,13 @@ No repeats confirmed. The group must check all members' additional scenarios bef
 - Test function: `test_delete_active_task`
 - Description: Add two tasks, delete "Study Python", and verify that the other task remains.
 - Expected result: "Study Python" is removed and only "Complete assignment" remains.
-- Actual result: Passed in the previous Member 2 run; reconfirm after the final group run.
+- Actual result: Passed
 - Evidence: `docs/evidence/member-2/extra-test-1-delete-task.png`
 ### Test 2: Clear Completed Tasks
 - Test function: `test_clear_completed_tasks`
 - Description: Add three tasks, mark "Study Python" and "Finish assignment" as completed, then click Clear completed.
 - Expected result: Both completed tasks are removed, and only the unfinished task, "Revise DevOps", remains.
-- Actual result: To confirm after running the replacement test.
+- Actual result: Passed
 - Evidence: `docs/evidence/member-2/extra-test-2-clear-completed.png`
 
 
