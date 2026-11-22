@@ -172,44 +172,63 @@ def test_delete_active_task(page: Page):
 
 
 
+
 ### EXTRA TEST 2 ###
-# Scenario: Active shows unfinished tasks only.
+# Scenario: Clear completed removes completed tasks only.
 # Condition: Fresh session and empty list.
-# Values: "Revise DevOps" and "Submit homework".
-# Description: Add both tasks, complete the first, then select Active.
-# Expected outcome: Only "Submit homework" appears.
-def test_active_filter(page: Page):
+# Values: "Study Python", "Finish assignment", "Revise DevOps".
+# Description: Add three tasks, complete the first two,
+# then click Clear completed.
+# Expected outcome: Only "Revise DevOps" remains.
+
+def test_clear_completed_tasks(page: Page):
     page.goto(URL)
 
     task_items = page.locator(".todo-list li")
 
-    # Add two tasks
+    # Verify the list starts empty
+    expect(task_items).to_have_count(0)
+
+    # Add three tasks
+    add_task(page, "Study Python")
+    add_task(page, "Finish assignment")
     add_task(page, "Revise DevOps")
-    add_task(page, "Submit homework")
 
-    # Verify both tasks were added
-    expect(task_items).to_have_count(2)
+    # Verify all three tasks were added
+    expect(task_items).to_have_count(3)
 
-    # Mark the first task as completed
-    first_task = task_items.filter(has_text="Revise DevOps")
-    first_task.get_by_role("checkbox").check()
+    # Complete the first two tasks
+    task_items.filter(
+        has_text="Study Python"
+    ).get_by_role("checkbox").check()
 
-    # Verify task is completed
-    expect(first_task.get_by_role("checkbox")).to_be_checked()
+    task_items.filter(
+        has_text="Finish assignment"
+    ).get_by_role("checkbox").check()
 
-    # Select the Active filter
+    # Verify two tasks are completed
+    expect(
+        page.locator(".todo-list li.completed")
+    ).to_have_count(2)
+
+    # Clear the completed tasks
     page.get_by_role(
-        "link", name="Active", exact=True
+        "button", name="Clear completed"
     ).click()
 
-    # Only the unfinished task should appear
+    # Verify only the unfinished task remains
     expect(task_items).to_have_count(1)
     expect(task_items.locator("label")).to_have_text(
-        ["Submit homework"]
+        ["Revise DevOps"]
     )
+
+    # Verify no completed tasks remain
+    expect(
+        page.locator(".todo-list li.completed")
+    ).to_have_count(0)
 
     # Save screenshot evidence
     page.screenshot(
-        path="docs/evidence/member-2/extra-test-2-active-filter.png",
+        path="docs/evidence/member-2/extra-test-2-clear-completed.png",
         full_page=True,
     )
