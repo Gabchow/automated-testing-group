@@ -10,9 +10,11 @@ Each member must complete two additional automated tests beyond the eight guided
 | 4 | Active filter shows unfinished tasks only | Reject login with an incorrect username | `docs/evidence/member-4/` |
 | 5 | Tasks remain after refreshing the page | Cancel task editing using Escape | `docs/evidence/member-5/` |
 
-## Unavoidable Repeats
 
-No repeats confirmed. The group must check all members' additional scenarios before final submission.
+## Unavoidable repeats, if any
+
+| Scenario | Members | Why no suitable alternative is available | Meaningful implementation differences |
+| --- | --- | --- | --- |
 
 
 
